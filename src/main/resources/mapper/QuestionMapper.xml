@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thornchg.rkt.mapper.QuestionMapper">
+    <sql id="whereSql">
+        <where>
+            <if test="question!=null and question.questionType!=null">
+                and q.question_type=#{question.questionType}
+            </if>
+            <if test="question!=null and question.knowledgeId!=null">
+                and q.knowledge_id=#{question.knowledgeId}
+            </if>
+            <if test="question!=null and question.topic!=null">
+                and q.topic like #{question.topic}
+            </if>
+        </where>
+    </sql>
+    <select id="findList" resultType="ChoiceQuestionVo">
+        select q.*,k.`name` as knowledge_name,uc.nick_name as creator,uu.nick_name as updater,sub.name as subject_name
+        from t_question q
+        INNER JOIN t_user uc on q.creator_id=uc.id
+        LEFT JOIN t_knowledge k on q.knowledge_id=k.id
+        LEFT JOIN t_user uu on q.updater_id=uu.id
+        LEFT JOIN t_subject sub on q.subject_id=sub.id
+        <include refid="whereSql"/>
+    </select>
+
+    <select id="selectBySubjectKnowledge" resultType="ChoiceQuestionVo">
+        select q.*,k.`name` as knowledge_name,uc.nick_name as creator,uu.nick_name as updater,sub.name as subject_name
+        from t_question q
+        INNER JOIN t_user uc on q.creator_id=uc.id
+        LEFT JOIN t_knowledge k on q.knowledge_id=k.id
+        LEFT JOIN t_user uu on q.updater_id=uu.id
+        LEFT JOIN t_subject sub on q.subject_id=sub.id
+				where q.knowledge_id in(
+				select sk.id
+                from t_subject_knowledge sk
+                <where>
+                    <if test="subjectKnowledge.subjectId!=null">
+                        and sk.subject_id=#{subjectKnowledge.subjectId}
+                    </if>
+                    <if test="subjectKnowledge.knowledgeId!=null">
+                        and sk.knowledge_id=#{subjectKnowledge.knowledgeId}
+                    </if>
+                </where>
+				)
+        <if test="subjectKnowledge.questionType!=null">
+            and q.question_type=#{subjectKnowledge.questionType}
+        </if>
+    </select>
+    <select id="selectVoById" parameterType="String" resultType="ChoiceQuestionVo">
+        select q.*,k.`name` as knowledge_name,uc.nick_name as creator,uu.nick_name as updater,sub.name as subject_name
+        from t_question q
+        INNER JOIN t_user uc on q.creator_id=uc.id
+        LEFT JOIN t_knowledge k on q.knowledge_id=k.id
+        LEFT JOIN t_user uu on q.updater_id=uu.id
+        LEFT JOIN t_subject sub on q.subject_id=sub.id
+        where q.id=#{value}
+    </select>
+
+
+</mapper>

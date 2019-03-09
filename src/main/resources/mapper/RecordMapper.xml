@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thornchg.rkt.mapper.RecordMapper">
+    <select id="selectListByPaper" resultType="Record">
+        select r.*
+        from t_record r,t_paper p
+        where r.paper_id=p.id and r.user_id=#{userId}
+        <if test="paper.subjectId!=null">
+            and p.subject_id=#{paper.subjectId}
+        </if>
+        <if test="paper.questionType!=null">
+            and p.question_type=#{paper.questionType}
+        </if>
+        <if test="paper.paperTypeId!=null">
+            and p.paper_type_id=#{paper.paperTypeId}
+        </if>
+    </select>
+
+</mapper>

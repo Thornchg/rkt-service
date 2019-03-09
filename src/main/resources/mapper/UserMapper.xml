@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thornchg.rkt.mapper.UserMapper">
+    <resultMap id="UserVoMap" type="UserVo">
+        <id property="id" column="id"/>
+        <result property="email" column="email"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="avatar" column="avatar"/>
+        <result property="roleId" column="role_id"/>
+        <result property="subjectId" column="subject_id"/>
+        <result property="phone" column="phone"/>
+        <result property="createTime" column="create_time"/>
+        <result property="roleName" column="role_name"/>
+        <result property="roleCode" column="role_code"/>
+        <result property="subjectName" column="subject_name"/>
+    </resultMap>
+    <select id="findVoByEmail" parameterType="String" resultMap="UserVoMap">
+        select u.*,r.name as role_name,r.code as role_code,s.name as subject_name
+        from t_user u,t_role r,t_subject s
+        where u.role_id=r.id and u.subject_id=s.id and LOWER(u.email)=LOWER(#{value})
+    </select>
+    <select id="findByEmail" parameterType="String" resultType="User">
+        select *
+        from t_user
+        where LOWER(email)=LOWER(#{value})
+    </select>
+    <select id="findVoById" parameterType="String" resultMap="UserVoMap">
+        select u.*,r.name as role_name,r.code as role_code,s.name as subject_name
+        from t_user u,t_role r,t_subject s
+        where u.role_id=r.id and u.subject_id=s.id and u.id=#{value}
+    </select>
+
+</mapper>

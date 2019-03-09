@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thornchg.rkt.mapper.KnowledgeMapper">
+    <select id="selectBySubjectKnowledge" resultType="KnowledgeVo">
+        select k.*,sk.subject_id,sk.question_type
+        from t_knowledge k
+        INNER JOIN t_subject_knowledge sk on k.id=sk.knowledge_id
+        <where>
+            <if test="subjectId!=null">
+                and sk.subject_id=#{subjectId}
+            </if>
+            <if test="questionType!=null">
+                and sk.question_type=#{questionType}
+            </if>
+        </where>
+    </select>
+
+</mapper>
